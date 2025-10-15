@@ -1,22 +1,49 @@
-# Implementando Loading Request durante el Envío de Formularios
+# Loading Request en Formularios React
 
-##### Este proyecto enseña a implementar un indicador de carga durante el envío de formularios utilizando useState y el paquete loading request. Aprenderás a mejorar significativamente la experiencia del usuario al proporcionar feedback visual mientras se procesan las solicitudes de envío.
+Implementación de indicadores de carga dinámicos durante el envío de formularios usando [loading-request](https://www.npmjs.com/package/loading-request) y React Hook Form.
 
-#### Para correr el proyecto, solo toca instalar las dependencias y correr el proyecto
+## Instalación
 
-    npm install
-    npm run dev
+```bash
+npm install
+npm run dev
+```
 
-#### Resultado final
+## Características
 
-![](https://raw.githubusercontent.com/urian121/imagenes-proyectos-github/master/Loading-Request-formulario.gif)
+- ✅ Loading con estados visuales (cargando, éxito, error)
+- ✅ Colores dinámicos según el estado
+- ✅ Manejo de errores con try/catch
+- ✅ Limpieza automática del formulario
+- ✅ Feedback visual mejorado
 
+## Uso de loading-request
 
-### Expresiones de Gratitud 🎁
+```javascript
+import { showLoading, hideLoading, updateLoading } from "loading-request";
 
-    Comenta a otros sobre este proyecto 📢
-    Invita una cerveza 🍺 o un café ☕
-    Paypal iamdeveloper86@gmail.com
-    Da las gracias públicamente 🤓.
+// Mostrar loading inicial
+showLoading({
+  message: "Enviando...",
+  spinnerColor: "#7366ff",
+  textLoadingColor: "#7366ff"
+});
 
-## No olvides SUSCRIBIRTE 👍
+// Actualizar según resultado
+updateLoading({ 
+  message: "¡Éxito!",
+  spinnerColor: "#10b981"
+});
+
+// Ocultar loading
+await hideLoading();
+```
+
+## Stack
+
+- React 18 + Vite
+- React Hook Form
+- loading-request 2.21.0
+- Bootstrap 5
+
+![Demo](https://raw.githubusercontent.com/urian121/imagenes-proyectos-github/master/Loading-Request-formulario.gif)

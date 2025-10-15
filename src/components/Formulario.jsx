@@ -3,25 +3,68 @@ import { useForm } from 'react-hook-form';
 import Titulo from "./Titulo";
 import GridIzquierdo from "./GridIzquierdo";
 
-import { showLoading, hideLoading } from "loading-request";
+import { showLoading, hideLoading, updateLoading } from "loading-request";
 
 function Formulario() {
   const [data, setData] = useState({});
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
 
-  const onSubmit = (dataForm) => {
+  const onSubmit = async (dataForm) => {
     showLoading({
       message: "Enviando Formulario...",
       spinnerColor: "#7366ff",
       textLoadingColor: "#7366ff",
-      textLoadingSize: "20px",
+      textLoadingSize: "18px",
     });
 
-    //console.log(dataForm);
-    setData(dataForm) //Actualizando la data
-    // Validar si dataForm tiene datos y ocultar el indicador de carga
-    if (data) {
-      hideLoading({ timeLoading: 1000 });
+    try {
+      // Simulación de envío a una API
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dataForm),
+      });
+
+      if (response.ok) {
+        // Actualizar el estado de los datos
+        setData(dataForm);
+
+        // Actualizar el loading con mensaje de éxito
+        updateLoading({
+          message: "¡Formulario enviado exitosamente!",
+          spinnerColor: "#10b981",
+          textLoadingColor: "#10b981",
+        });
+
+        // Esperar 2 segundos antes de ocultar el loading y limpiar el formulario
+        setTimeout(async () => {
+          await hideLoading();
+          reset(); // Limpiar el formulario
+        }, 2000);
+      } else {
+        console.log("Error al enviar el formulario");
+      }
+    } catch (error) {
+      // Actualizar el loading con mensaje de error
+      updateLoading({
+        message: "Error al enviar el formulario",
+        spinnerColor: "#ef4444",
+        textLoadingColor: "#ef4444",
+      });
+
+      // Esperar 2 segundos antes de ocultar el loading
+      setTimeout(async () => {
+        await hideLoading();
+      }, 2000);
+
+      console.error("Error:", error);
+    } finally {
+      hideLoading();
     }
   };
 
@@ -31,7 +74,9 @@ function Formulario() {
       <GridIzquierdo data={data} />
 
       <div className="col-md-7">
-        <h2 className="text-center mb-3 fw-bold">Información del Empleado <hr /></h2>
+        <h2 className="text-center mb-3 fw-bold">
+          Información del Empleado <hr />
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-3">
             <label htmlFor="nombre" className="form-label">
@@ -42,9 +87,11 @@ function Formulario() {
               className="form-control"
               id="nombre"
               name="nombre"
-              {...register('nombre', { required: true })}
+              {...register("nombre", { required: true })}
             />
-            {errors.nombre && <span className="text-danger">Este campo es requerido</span>}
+            {errors.nombre && (
+              <span className="text-danger">Este campo es requerido</span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="telefono" className="form-label">
@@ -55,9 +102,11 @@ function Formulario() {
               className="form-control"
               id="telefono"
               name="telefono"
-              {...register('telefono')}
+              {...register("telefono")}
             />
-            {errors.telefono && <span className="text-danger">Este campo es requerido</span>}
+            {errors.telefono && (
+              <span className="text-danger">Este campo es requerido</span>
+            )}
           </div>
           <div className="mb-3">
             <label htmlFor="sexo" className="form-label">
@@ -70,7 +119,7 @@ function Formulario() {
                 name="sexo"
                 id="sexoMasculino"
                 value="masculino"
-                {...register('sexo')}
+                {...register("sexo")}
               />
               <label className="form-check-label" htmlFor="sexoMasculino">
                 Masculino
@@ -83,7 +132,7 @@ function Formulario() {
                 name="sexo"
                 id="sexoFemenino"
                 value="femenino"
-                {...register('sexo')}
+                {...register("sexo")}
               />
               <label className="form-check-label" htmlFor="sexoFemenino">
                 Femenino
@@ -91,9 +140,7 @@ function Formulario() {
             </div>
           </div>
           <div className="d-grid gap-2">
-            <button
-              className="btn btn-primary btn_add"
-              type="submit">
+            <button className="btn btn-primary btn_add" type="submit">
               Enviar Formulario
             </button>
           </div>
